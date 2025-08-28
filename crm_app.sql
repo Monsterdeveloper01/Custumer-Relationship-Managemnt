@@ -23,7 +23,7 @@ CREATE TABLE `users` (
 
 -- Isi data users
 INSERT INTO `users` VALUES
-('FRL','Farelfadlillah','farel@rtn.com','$2y$10$oM1L2.rdmilz70hafNTiz.Gm.q8J6wj3ZDTjo.My6yi4WdltIX0Du','2025-08-27 11:36:07'),
+('FRL','Farelfadlillah','farel@rtn.com','$2y$10$oM1L2.rdmilz70hafNTiz.Gm.q8J6wj3ZDTjo.My6yi4WdltIX0Du','2025-08-27 11:36:07');
 -- (dst, semua data users yang ada di dump awal…)
 
 -- ======================================================
