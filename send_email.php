@@ -1,12 +1,16 @@
 <?php
-// send_email.php
 require_once 'db.php';
 require_once 'functions.php';
 require_login();
 
+// PHPMailer
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+require 'vendor/autoload.php';
+
 $mid = current_marketing_id();
 $marketing_name = $_SESSION['user']['name'];
-$marketing_email = $_SESSION['user']['email']; 
+$marketing_email = $_SESSION['user']['email'];
 
 $company_email = $_GET['email'] ?? '';
 if (!$company_email) { header('Location: dashboard.php'); exit; }
@@ -29,37 +33,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $subject = trim($_POST['subject'] ?? $default_subject);
     $body = trim($_POST['body'] ?? $default_body);
 
-    $from = defined('DEFAULT_FROM_EMAIL') ? DEFAULT_FROM_EMAIL : ($marketing_email ?: 'noreply@localhost');
-    $fromName = defined('DEFAULT_FROM_NAME') ? DEFAULT_FROM_NAME : $marketing_name;
-    $headers = "From: {$fromName} <{$from}>\r\n";
-    if ($marketing_email) {
-        $headers .= "Reply-To: {$marketing_name} <{$marketing_email}>\r\n";
-    }
-    $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    $mail = new PHPMailer(true);
+    try {
+        // Konfigurasi SMTP (gunakan 1 email utama perusahaan)
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'farelsfadlillah@gmail.com';   // email utama perusahaan
+        $mail->Password   = 'aive zfog ywby lhzc';       // App Password Gmail
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
 
-    $sent = mail($to, $subject, $body, $headers);
+        // Pengirim resmi (harus sama dengan Username di atas)
+        $mail->setFrom('farelsfadlillah@gmail.com', "CRM - {$marketing_name}");
+        
+        // Tujuan
+        $mail->addAddress($to);
 
-    if ($sent) {
+        // Supaya klien bisa reply ke email marketing masing-masing
+        if ($marketing_email) {
+            $mail->addReplyTo($marketing_email, $marketing_name);
+        }
+
+        // Konten email
+        $mail->isHTML(false);
+        $mail->Subject = $subject;
+        $mail->Body    = $body;
+
+        $mail->send();
+
+        // update status di database
         $stmt = $pdo->prepare("UPDATE crm SET status = 'emailed', updated_at = NOW() WHERE company_email = ? AND marketing_id = ?");
         $stmt->execute([$company_email, $mid]);
-        $info = "Email berhasil dikirim ke {$to}. Status diupdate menjadi 'emailed'.";
-    } else {
-        $info = "Gagal mengirim email. Periksa konfigurasi mail server.";
+
+        $info = "✅ Email berhasil dikirim ke {$to}. Status diupdate menjadi 'emailed'.";
+    } catch (Exception $e) {
+        $info = "❌ Gagal mengirim email. Error: {$mail->ErrorInfo}";
     }
 }
 ?>
+
 <!doctype html>
 <html lang="id">
 <head>
   <meta charset="utf-8">
   <title>Send Email | CRM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-6">
-
   <div class="w-full max-w-3xl bg-white shadow-lg rounded-2xl p-8">
     <h2 class="text-2xl font-bold text-blue-700 mb-6">Send Email ke <?=h($data['company_name'])?></h2>
 
@@ -102,6 +124,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
     </form>
   </div>
-
 </body>
 </html>
