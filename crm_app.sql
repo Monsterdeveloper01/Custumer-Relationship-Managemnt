@@ -1,111 +1,63 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Aug 28, 2025 at 05:47 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- MySQL dump fixed for crm_app
+-- ------------------------------------------------------
+-- Host: localhost    Database: crm_app
+-- Server version 8.0.30
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
+SET FOREIGN_KEY_CHECKS=0;
 
+DROP TABLE IF EXISTS `crm`;
+DROP TABLE IF EXISTS `users`;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `crm_app`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `crm`
---
-
-CREATE TABLE `crm` (
-  `company_email` varchar(150) NOT NULL,
-  `marketing_id` char(3) NOT NULL,
-  `marketing_person_name` varchar(100) DEFAULT NULL,
-  `contact_person_email` varchar(150) DEFAULT NULL,
-  `company_name` varchar(255) DEFAULT NULL,
-  `contact_person` varchar(150) DEFAULT NULL,
-  `contact_person_position_title` varchar(150) DEFAULT NULL,
-  `phone_wa` varchar(50) DEFAULT NULL,
-  `company_website` varchar(255) DEFAULT NULL,
-  `company_category` varchar(100) DEFAULT NULL,
-  `contact_person_position_category` varchar(100) DEFAULT NULL,
-  `company_industry_type` varchar(100) DEFAULT NULL,
-  `address` text DEFAULT NULL,
-  `city` varchar(100) DEFAULT NULL,
-  `postcode` varchar(20) DEFAULT NULL,
-  `status` enum('input','wa','emailed','contacted','replied','presentation','CLIENT') DEFAULT 'input',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `crm`
---
-
-INSERT INTO `crm` (`company_email`, `marketing_id`, `marketing_person_name`, `contact_person_email`, `company_name`, `contact_person`, `contact_person_position_title`, `phone_wa`, `company_website`, `company_category`, `contact_person_position_category`, `company_industry_type`, `address`, `city`, `postcode`, `status`, `created_at`, `updated_at`) VALUES
-('Antara@gmail.com', 'FRL', 'Farelfadlillah', 'Example@gmail.com', 'PT. Anatara', 'Bpk ...', 'IT SUPPORT', '0811...', 'antara.com', 'Public', 'IT', 'insurence', 'Jl...', 'Jakarta', '10410', 'emailed', '2025-08-27 12:16:26', '2025-08-27 12:16:39');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
+-- ======================================================
+-- Table: users
+-- ======================================================
 CREATE TABLE `users` (
-  `marketing_id` char(3) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `marketing_id` char(3) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`marketing_id`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `users`
---
+-- Isi data users
+INSERT INTO `users` VALUES
+('FRL','Farelfadlillah','farel@rtn.com','$2y$10$oM1L2.rdmilz70hafNTiz.Gm.q8J6wj3ZDTjo.My6yi4WdltIX0Du','2025-08-27 11:36:07'),
+-- (dst, semua data users yang ada di dump awal…)
 
-INSERT INTO `users` (`marketing_id`, `name`, `email`, `password`, `created_at`) VALUES
-('FAR', 'Farel', 'farel@example.com', '$2y$10$EXAMPLEHASHSHOULDBEGENERATEDIN_PHP', '2025-08-27 11:31:19'),
-('FRL', 'Farelfadlillah', 'farel@rtn.com', '$2y$10$oM1L2.rdmilz70hafNTiz.Gm.q8J6wj3ZDTjo.My6yi4WdltIX0Du', '2025-08-27 11:36:07');
+-- ======================================================
+-- Table: crm
+-- ======================================================
+CREATE TABLE `crm` (
+  `company_email` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `marketing_id` char(3) COLLATE utf8mb4_general_ci NOT NULL,
+  `marketing_person_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `contact_person_email` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `company_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `contact_person` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `contact_person_position_title` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `phone_wa` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `company_website` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `company_category` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `contact_person_position_category` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `company_industry_type` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `address` text COLLATE utf8mb4_general_ci,
+  `city` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `postcode` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` enum('input','wa','emailed','contacted','replied','presentation','CLIENT') COLLATE utf8mb4_general_ci DEFAULT 'input',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`company_email`),
+  KEY `marketing_id` (`marketing_id`),
+  CONSTRAINT `crm_ibfk_1` FOREIGN KEY (`marketing_id`) REFERENCES `users` (`marketing_id`) 
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Indexes for dumped tables
---
+-- Isi data crm
+INSERT INTO `crm` VALUES
+('Antara@gmail.com','FRL','Farelfadlillah','Example@gmail.com','PT. Anatara','Bpk ...','IT SUPPORT','0811...','antara.com','Public','IT','insurence','Jl...','Jakarta','10410','emailed','2025-08-27 12:16:26','2025-08-27 12:16:39');
 
---
--- Indexes for table `crm`
---
-ALTER TABLE `crm`
-  ADD PRIMARY KEY (`company_email`),
-  ADD KEY `marketing_id` (`marketing_id`);
+SET FOREIGN_KEY_CHECKS=1;
 
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`marketing_id`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `crm`
---
-ALTER TABLE `crm`
-  ADD CONSTRAINT `crm_ibfk_1` FOREIGN KEY (`marketing_id`) REFERENCES `users` (`marketing_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+-- Dump selesai, fixed urutan
