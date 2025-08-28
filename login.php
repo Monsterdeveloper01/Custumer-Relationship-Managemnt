@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <title>Login CRM | IT Consultant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Tailwind via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="css/output.css" rel="stylesheet">
 </head>
 <body class="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen flex items-center justify-center">
 

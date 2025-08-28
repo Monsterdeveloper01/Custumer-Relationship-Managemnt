@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="utf-8">
   <title>Send Email | CRM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="css/output.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-6">
   <div class="w-full max-w-3xl bg-white shadow-lg rounded-2xl p-8">
