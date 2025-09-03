@@ -1,0 +1,221 @@
+<?php
+require_once 'db.php';
+require_once 'functions.php';
+
+// Pagination
+$limit = 5;
+$page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$start = ($page - 1) * $limit;
+
+// Hitung total data
+$stmtTotal = $pdo->query("SELECT COUNT(*) AS total FROM crm");
+$total = $stmtTotal->fetch()['total'];
+$pages = ceil($total / $limit);
+
+// Ambil data
+$sql = "SELECT * FROM crm LIMIT :start, :limit";
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':start', $start, PDO::PARAM_INT);
+$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+$stmt->execute();
+$data = $stmt->fetchAll();
+
+// Jika ada email (Edit mode)
+$editData = null;
+if (isset($_GET['email'])) {
+  $stmtEdit = $pdo->prepare("SELECT * FROM crm WHERE company_email = :email");
+  $stmtEdit->execute(['email' => $_GET['email']]);
+  $editData = $stmtEdit->fetch();
+}
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Contact List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+  <header class="bg-white text-black shadow-md">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    
+    <!-- Kiri: Logo di atas, Text di bawah -->
+    <div class="flex flex-col items-start">
+      <img src="img/rayterton-apps-software-logo.png" 
+           alt="Logo"
+           class="mb-1 object-contain"
+           style="width: 140px; height: 35px;">
+      <h1 class="text-lg font-semibold tracking-wide" style="color: #4F46E5;">
+        Customer Relationship Management
+      </h1>
+    </div>
+
+    <!-- Kanan: Sapaan user -->
+    <div class="text-sm">
+      Halo, <strong><?=h($_SESSION['user']['name'])?></strong>
+    </div>
+  </div>
+</header>
+
+  <div class="container mx-auto p-6">
+
+    <!-- Input / Edit Form -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+      <h2 class="text-lg font-semibold mb-4">
+        <?= $editData ? "Edit Contact" : "Add New Contact" ?>
+      </h2>
+
+      <form action="<?= $editData ? 'update_contact.php' : 'save_contact.php' ?>" method="POST" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <?php if ($editData): ?>
+          <input type="hidden" name="company_email" value="<?= h($editData['company_email']); ?>">
+        <?php endif; ?>
+
+        <input type="text" name="company_name" placeholder="Company Name"
+          value="<?= $editData ? h($editData['company_name']) : '' ?>"
+          class="border rounded-lg p-2 w-full" required>
+
+        <input type="text" name="contact_person" placeholder="Contact Person"
+          value="<?= $editData ? h($editData['contact_person']) : '' ?>"
+          class="border rounded-lg p-2 w-full" required>
+
+        <input type="email" name="company_email" placeholder="Company Email"
+          value="<?= $editData ? h($editData['company_email']) : '' ?>"
+          class="border rounded-lg p-2 w-full" required>
+
+        <input type="email" name="contact_person_email" placeholder="Contact Person Email"
+          value="<?= $editData ? h($editData['contact_person_email']) : '' ?>"
+          class="border rounded-lg p-2 w-full">
+
+        <input type="text" name="phone_wa" placeholder="WhatsApp"
+          value="<?= $editData ? h($editData['phone_wa']) : '' ?>"
+          class="border rounded-lg p-2 w-full">
+
+        <input type="text" name="contact_person_position_title" placeholder="Position Title"
+          value="<?= $editData ? h($editData['contact_person_position_title']) : '' ?>"
+          class="border rounded-lg p-2 w-full">
+
+        <input type="text" name="company_website" placeholder="Company Website"
+          value="<?= $editData ? h($editData['company_website']) : '' ?>"
+          class="border rounded-lg p-2 w-full">
+
+        <input type="text" name="company_category" placeholder="Company Category"
+          value="<?= $editData ? h($editData['company_category']) : '' ?>"
+          class="border rounded-lg p-2 w-full">
+
+        <input type="text" name="contact_person_position_category" placeholder="Position Category"
+          value="<?= $editData ? h($editData['contact_person_position_category']) : '' ?>"
+          class="border rounded-lg p-2 w-full">
+
+        <input type="text" name="company_industry_type" placeholder="Industry Type"
+          value="<?= $editData ? h($editData['company_industry_type']) : '' ?>"
+          class="border rounded-lg p-2 w-full">
+
+        <input type="text" name="address" placeholder="Address"
+          value="<?= $editData ? h($editData['address']) : '' ?>"
+          class="border rounded-lg p-2 w-full">
+
+        <input type="text" name="city" placeholder="City"
+          value="<?= $editData ? h($editData['city']) : '' ?>"
+          class="border rounded-lg p-2 w-full">
+
+        <input type="text" name="postcode" placeholder="Postcode"
+          value="<?= $editData ? h($editData['postcode']) : '' ?>"
+          class="border rounded-lg p-2 w-full">
+
+        <select name="status" class="border rounded-lg p-2 w-full" required>
+          <?php
+          $statuses = ["-- Pilih Status --", "input", "wa", "emailed", "contacted", "replied", "presentation", "client"];
+          foreach ($statuses as $s):
+            $selected = ($editData && $editData['status'] == $s) ? "selected" : "";
+            echo "<option value='$s' $selected>" . ucfirst($s) . "</option>";
+          endforeach;
+          ?>
+        </select>
+
+        <button type="submit" class="col-span-1 md:col-span-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+          <?= $editData ? "Update Contact" : "Add Contact" ?>
+        </button>
+      </form>
+    </div>
+
+
+    <!-- Table -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-lg font-semibold mb-4">All Contacts</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-200">
+          <thead>
+            <tr class="bg-gray-200 text-gray-700">
+              <th class="py-2 px-4 border">#</th>
+              <th class="py-2 px-4 border">Company</th>
+              <th class="py-2 px-4 border">Contact Person</th>
+              <th class="py-2 px-4 border">Company Email</th>
+              <th class="py-2 px-4 border">Contact Person Email</th>
+              <th class="py-2 px-4 border">WhatsApp</th>
+              <th class="py-2 px-4 border">Position Title</th>
+              <th class="py-2 px-4 border">Company Website</th>
+              <th class="py-2 px-4 border">Company Category</th>
+              <th class="py-2 px-4 border">Position Category</th>
+              <th class="py-2 px-4 border">Industry Type</th>
+              <th class="py-2 px-4 border">Address</th>
+              <th class="py-2 px-4 border">City</th>
+              <th class="py-2 px-4 border">Postcode</th>
+              <th class="py-2 px-4 border">Status</th>
+              <th class="py-2 px-4 border">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+            $no = $start + 1;
+            foreach ($data as $row): ?>
+              <tr class="text-center">
+                <td class="py-2 px-4 border"><?= $no++; ?></td>
+                <td class="py-2 px-4 border"><?= h($row['company_name']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['contact_person']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['company_email']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['contact_person_email']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['phone_wa']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['contact_person_position_title']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['company_website']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['company_category']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['contact_person_position_category']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['company_industry_type']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['address']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['city']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['postcode']); ?></td>
+                <td class="py-2 px-4 border"><?= h($row['status']); ?></td>
+                <td class="py-2 px-4 border">
+                  <a href="contact_list.php?email=<?= urlencode($row['company_email']); ?>"
+                    class="text-blue-600 hover:underline">Edit</a>
+                  <a href="delete_contact.php?email=<?= urlencode($row['company_email']); ?>"
+                    class="text-red-600 hover:underline"
+                    onclick="return confirm('Yakin mau hapus kontak ini?');">Delete</a>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="flex justify-between items-center mt-4">
+        <p class="text-sm text-gray-600">
+          Showing <?= $start + 1; ?> to <?= min($start + $limit, $total); ?> of <?= $total; ?> contacts
+        </p>
+        <div class="flex space-x-2">
+          <?php for ($i = 1; $i <= $pages; $i++): ?>
+            <a href="?page=<?= $i; ?>"
+              class="px-3 py-1 border rounded-lg <?= ($i == $page) ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'; ?>">
+              <?= $i; ?>
+            </a>
+          <?php endfor; ?>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
