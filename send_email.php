@@ -8,55 +8,94 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';
 
-$mid = current_marketing_id();
-$marketing_name = $_SESSION['user']['name'];
+$mid             = current_marketing_id();
+$marketing_name  = $_SESSION['user']['name'];
 $marketing_email = $_SESSION['user']['email'];
 
 $company_email = $_GET['email'] ?? '';
-if (!$company_email) { header('Location: dashboard.php'); exit; }
+if (!$company_email) { 
+    header('Location: dashboard.php'); 
+    exit; 
+}
 
 // ambil data contact & cek kepemilikan
 $stmt = $pdo->prepare("SELECT * FROM crm WHERE company_email = ? AND marketing_id = ?");
 $stmt->execute([$company_email, $mid]);
 $data = $stmt->fetch();
-if (!$data) { die("Data tidak ditemukan atau akses ditolak."); }
+if (!$data) { 
+    die("Data tidak ditemukan atau akses ditolak."); 
+}
 
-// template default
-$default_subject = "Perkenalan dari {$marketing_name} - Penawaran Kerja Sama";
-$default_body = "Halo ".($data['contact_person'] ?: $data['company_name']).",\n\n"
-    . "Perkenalkan, saya {$marketing_name} dari [Nama Perusahaan Anda]. Saya ingin mengajak diskusi mengenai potensi kerja sama antara [Nama Perusahaan Anda] dan {$data['company_name']}.\n\n"
-    . "Apakah Bapak/Ibu ada waktu untuk diskusi singkat minggu ini? Saya bisa menyesuaikan jadwal.\n\nTerima kasih.\n\nSalam,\n{$marketing_name}\n[Posisi]\n[Telepon/WA]\n";
+// ==========================
+// Default Template Email
+// ==========================
+$default_subject = "Kesempatan Kerja Sama antara PT Rayterton Indonesia & {$data['company_name']}";
+$default_body    = "Halo ".($data['contact_person'] ?: $data['company_name']).",\n\n"
+    . "Perkenalkan, saya {$marketing_name} dari PT Rayterton Indonesia. "
+    . "Saya menghubungi Bapak/Ibu karena melihat ada potensi kerja sama yang baik "
+    . "antara PT Rayterton Indonesia dan {$data['company_name']}.\n\n"
+    . "Kami yakin, dengan pengalaman serta layanan yang kami miliki, "
+    . "kolaborasi ini bisa membawa manfaat bagi kedua belah pihak.\n\n"
+    . "Apakah Bapak/Ibu berkenan meluangkan waktu untuk diskusi singkat minggu ini? "
+    . "Saya bisa menyesuaikan jadwal sesuai waktu yang nyaman bagi Bapak/Ibu.\n\n"
+    . "Terima kasih atas perhatian Bapak/Ibu.\n"
+    . "Saya berharap kita bisa segera berdiskusi lebih lanjut.\n\n"
+    . "Salam hangat,\n"
+    . "{$marketing_name}\n"
+    . "[Posisi]\n"
+    . "[Telepon/WA]\n";
 
 $info = '';
+
+// ==========================
+// Proses Kirim Email
+// ==========================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $to = $_POST['to'] ?? $company_email;
+    $to      = $_POST['to'] ?? $company_email;
     $subject = trim($_POST['subject'] ?? $default_subject);
-    $body = trim($_POST['body'] ?? $default_body);
+    $body    = trim($_POST['body'] ?? $default_body);
 
     $mail = new PHPMailer(true);
     try {
-        // Konfigurasi SMTP (gunakan 1 email utama perusahaan)
+        // ==========================
+        // KONFIGURASI SMTP
+        // ==========================
+
         $mail->isSMTP();
+        
+        // --- PAKAI GMAIL (butuh App Password) ---
+        /*
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'farelsfadlillah@gmail.com';   // email utama perusahaan
-        $mail->Password   = 'aive zfog ywby lhzc';       // App Password Gmail
+        $mail->Username   = 'marketing@rayterton.com';
+        $mail->Password   = 'APP_PASSWORD_GMAIL';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
+        */
 
-        // Pengirim resmi (harus sama dengan Username di atas)
-        $mail->setFrom('farelsfadlillah@gmail.com', "CRM - {$marketing_name}");
-        
-        // Tujuan
+        // --- PAKAI SMTP MAIL SERVER PERUSAHAAN (cPanel/Plesk) ---
+        $mail->Host       = 'mail.rayterton.com'; // ubah sesuai mail server
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'marketing@rayterton.com';
+        $mail->Password   = 'PASSWORD_EMAIL'; 
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // SSL
+        $mail->Port       = 465; // atau 587 (STARTTLS) jika server mendukung
+
+        // ==========================
+        // IDENTITAS EMAIL
+        // ==========================
+        $mail->setFrom('marketing@rayterton.com', "CRM - {$marketing_name}");
         $mail->addAddress($to);
 
-        // Supaya klien bisa reply ke email marketing masing-masing
+        // supaya klien balas ke email marketing masing-masing
         if ($marketing_email) {
             $mail->addReplyTo($marketing_email, $marketing_name);
         }
 
-        // Konten email
-        $mail->isHTML(false);
+        // ==========================
+        // KONTEN EMAIL
+        // ==========================
+        $mail->isHTML(false); // plain text
         $mail->Subject = $subject;
         $mail->Body    = $body;
 
