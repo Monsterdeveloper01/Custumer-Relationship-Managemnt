@@ -34,36 +34,73 @@ $rows = $stmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Tailwind via CDN -->
   <link href="css/output.css" rel="stylesheet">
+  <!-- Alpine.js -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
-<body class="bg-gray-50 min-h-screen">
-<!-- Navbar -->
-<header class="bg-white text-black shadow-md">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+<body class="bg-gray-50 min-h-screen" x-data="{ sidebarOpen: false }">
+
+  <!-- Navbar -->
+  <header class="bg-white text-black shadow-md">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+      <!-- Kiri: Burger + Logo + Text -->
+      <div class="flex items-center gap-3">
+        
+        <!-- Burger -->
+<button @click="sidebarOpen = !sidebarOpen" 
+  class="p-2 rounded-md hover:bg-gray-100 focus:outline-none text-2xl text-gray-700">
+  ☰
+</button>
+
+
+
+        <!-- Logo + Text -->
+        <div class="flex flex-col">
+          <img src="img/rayterton-apps-software-logo.png" 
+              alt="Logo"
+              class="object-contain"
+              style="width: 125px; height: 45px;">
+          <h1 class="text-lg font-semibold tracking-wide" style="color: #4F46E5;">
+            Customer Relationship Management
+          </h1>
+        </div>
+      </div>
+
+      <!-- Kanan: Sapaan user -->
+      <div class="text-sm">
+        Halo, <strong><?=h($_SESSION['user']['name'])?></strong>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar (slide dari kiri) -->
+  <aside x-show="sidebarOpen" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="-translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="-translate-x-full"
+         class="fixed top-0 left-0 w-56 h-full bg-white shadow-md z-50">
     
-    <!-- Kiri: Logo di atas, Text di bawah -->
-    <div class="flex flex-col items-start">
-      <img src="img/rayterton-apps-software-logo.png" 
-           alt="Logo"
-           class="mb-1 object-contain"
-           style="width: 125px; height: 45px;">
-      <h1 class="text-sm font-semibold tracking-wide" style="color: #4F46E5;">
-        Customer Relationship Management
-      </h1>
+    <!-- Tombol close -->
+    <div class="flex justify-end p-3">
+      <button @click="sidebarOpen = false" class="p-1 hover:bg-gray-200 rounded">
+        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
     </div>
 
-    <!-- Kanan: Sapaan user -->
-    <div class="text-sm">
-      Halo, <strong><?=h($_SESSION['user']['name'])?></strong>
-    </div>
-  </div>
-</header>
+    <!-- Menu -->
+    <nav class="mt-2 space-y-1 px-4">
+      <a href="dashboard.php" class="block px-2 py-2 rounded hover:bg-blue-100 text-gray-700">Dashboard</a>
+      <a href="contact_list.php" class="block px-2 py-2 rounded hover:bg-blue-100 text-gray-700">Contact List</a>
+    </nav>
+  </aside>
 
-
-
-
-
-  <!-- <a href="logout.php" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm">Logout</a> -->
-  <!-- Main Content -->
+  <!-- Konten Utama -->
   <main class="max-w-6xl mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-xl font-bold text-gray-700">Data Kontak</h2>
@@ -72,7 +109,7 @@ $rows = $stmt->fetchAll();
       </a>
     </div>
 
-    <!-- Filter Form -->
+    <!-- (filter form dan tabel tetap sama) -->
     <form method="get" class="bg-white p-4 rounded-lg shadow mb-6 flex flex-col sm:flex-row gap-4 sm:items-end">
       <div class="flex-1">
         <label class="block text-sm font-medium text-gray-700 mb-1">Cari</label>
@@ -148,3 +185,4 @@ $rows = $stmt->fetchAll();
   </main>
 </body>
 </html>
+
