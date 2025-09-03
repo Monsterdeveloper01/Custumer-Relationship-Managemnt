@@ -37,7 +37,7 @@ $rows = $stmt->fetchAll();
   <!-- Alpine.js -->
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
-<body class="bg-gray-50 min-h-screen" x-data="{ sidebarOpen: false }">
+<body class="bg-gray-50 min-h-screen" x-data="{ sidebarOpen: false, animate: false }">
 
   <!-- Navbar -->
   <header class="bg-white text-black shadow-md">
@@ -46,12 +46,20 @@ $rows = $stmt->fetchAll();
       <!-- Kiri: Burger + Logo + Text -->
       <div class="flex items-center gap-3">
         
-        <!-- Burger -->
-<button @click="sidebarOpen = !sidebarOpen" 
-  class="p-2 rounded-md hover:bg-gray-100 focus:outline-none text-2xl text-gray-700">
+        <!-- Button Burger -->
+<button 
+  @click="
+    sidebarOpen = !sidebarOpen;
+    animate = true;
+    setTimeout(() => animate = false, 300);
+  "
+  :class="[
+    'p-2 rounded-md hover:bg-gray-100 focus:outline-none text-2xl text-gray-700 transition-transform duration-300 ease-in-out',
+    animate ? 'scale-90 rotate-12' : 'scale-100 rotate-0'
+  ]"
+>
   ☰
 </button>
-
 
 
         <!-- Logo + Text -->
@@ -72,6 +80,7 @@ $rows = $stmt->fetchAll();
       </div>
     </div>
   </header>
+
 
   <!-- Sidebar (slide dari kiri) -->
   <aside x-show="sidebarOpen" 
