@@ -45,8 +45,8 @@ $rows = $stmt->fetchAll();
       <img src="img/rayterton-apps-software-logo.png" 
            alt="Logo"
            class="mb-1 object-contain"
-           style="width: 250px; height: 80px;">
-      <h1 class="text-xl font-semibold tracking-wide" style="color: #4F46E5;">
+           style="width: 125px; height: 45px;">
+      <h1 class="text-sm font-semibold tracking-wide" style="color: #4F46E5;">
         Customer Relationship Management
       </h1>
     </div>
