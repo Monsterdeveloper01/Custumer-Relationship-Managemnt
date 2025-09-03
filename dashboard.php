@@ -36,17 +36,33 @@ $rows = $stmt->fetchAll();
   <link href="css/output.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50 min-h-screen">
-  <!-- Navbar -->
-  <header class="bg-blue-600 text-white shadow-md">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-lg font-semibold">CRM Dashboard</h1>
-      <div class="flex items-center space-x-4">
-        <span class="text-sm">Halo, <strong><?=h($_SESSION['user']['name'])?></strong> (<?=h($mid)?>)</span>
-        <a href="logout.php" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm">Logout</a>
-      </div>
+<!-- Navbar -->
+<header class="bg-white text-black shadow-md">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    
+    <!-- Kiri: Logo di atas, Text di bawah -->
+    <div class="flex flex-col items-start">
+      <img src="img/rayterton-apps-software-logo.png" 
+           alt="Logo"
+           class="mb-1 object-contain"
+           style="width: 250px; height: 80px;">
+      <h1 class="text-xl font-semibold tracking-wide" style="color: #4F46E5;">
+        Customer Relationship Management
+      </h1>
     </div>
-  </header>
 
+    <!-- Kanan: Sapaan user -->
+    <div class="text-sm">
+      Halo, <strong><?=h($_SESSION['user']['name'])?></strong>
+    </div>
+  </div>
+</header>
+
+
+
+
+
+  <!-- <a href="logout.php" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm">Logout</a> -->
   <!-- Main Content -->
   <main class="max-w-6xl mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-6">
