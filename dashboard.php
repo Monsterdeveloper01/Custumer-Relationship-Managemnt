@@ -37,13 +37,12 @@ $rows = $stmt->fetchAll();
   <!-- Alpine.js -->
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
-<body class="bg-gray-50 min-h-screen" x-data="{ sidebarOpen: false, animate: false }">
+<body class="bg-gray-50 min-h-screen" x-data="{ sidebarOpen: false }">
 
   <!-- Navbar -->
-  <?php include("partials/Header.html"); ?>
+    <?php include("partials/Header.html"); ?>
 
   <!-- Sidebar -->
-  <?php include("partials/sidebar.html"); ?>
 
   <!-- Konten Utama -->
   <main class="max-w-6xl mx-auto px-4 py-6">
