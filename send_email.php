@@ -30,7 +30,7 @@ if (!$data) {
 // Default Template Email
 // ==========================
 $default_subject = "Kesempatan Kerja Sama antara PT Rayterton Indonesia & {$data['company_name']}";
-$default_body    = "Halo ".($data['contact_person'] ?: $data['company_name']).",\n\n"
+$default_body    = "Halo ".($data['name_person'] ?: $data['company_name']).",\n\n"
     . "Perkenalkan, saya {$marketing_name} dari PT Rayterton Indonesia. "
     . "Saya menghubungi Bapak/Ibu karena melihat ada potensi kerja sama yang baik "
     . "antara PT Rayterton Indonesia dan {$data['company_name']}.\n\n"
@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div>
         <label class="block text-sm font-medium text-gray-700">To</label>
         <input type="email" name="to"
-          value="<?=h($data['contact_person_email'] ?: $data['company_email'])?>"
+          value="<?=h($data['person_email'] ?: $data['company_email'])?>"
           class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
       </div>
 

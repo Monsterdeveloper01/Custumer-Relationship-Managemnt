@@ -30,15 +30,20 @@ if (!$data) { die("Data tidak ditemukan atau bukan milik Anda."); }
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
       <div>
-        <p class="text-gray-600 font-medium">Contact Person</p>
-        <p class="mt-1"><?=h($data['contact_person'])?> 
+        <p class="text-gray-600 font-medium">Name Person</p>
+        <p class="mt-1"><?=h($data['name_person'])?> 
           <span class="text-gray-500">(<?=h($data['contact_person_position_title'])?>)</span>
         </p>
       </div>
 
       <div>
         <p class="text-gray-600 font-medium">Phone / WA</p>
-        <p class="mt-1"><?=h($data['phone_wa'])?></p>
+        <p class="mt-1"><?=h($data['phone_number'])?></p>
+      </div>
+
+      <div>
+        <p class="text-gray-600 font-medium">Phone / WA</p>
+        <p class="mt-1"><?=h($data['phone_number2'])?></p>
       </div>
 
       <div>
@@ -52,7 +57,7 @@ if (!$data) { die("Data tidak ditemukan atau bukan milik Anda."); }
 
       <div>
         <p class="text-gray-600 font-medium">Category & Industry</p>
-        <p class="mt-1"><?=h($data['company_category'])?> — <?=h($data['company_industry_type'])?></p>
+        <p class="mt-1"><?=h($data['company_category'])?> — <?=h($data['company_type'])?></p>
       </div>
 
       <div class="sm:col-span-2">

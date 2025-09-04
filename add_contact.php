@@ -10,15 +10,16 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = [
         'company_email' => trim($_POST['company_email'] ?? ''),
-        'contact_person_email' => trim($_POST['contact_person_email'] ?? ''),
+        'person_email' => trim($_POST['person_email'] ?? ''),
         'company_name' => trim($_POST['company_name'] ?? ''),
-        'contact_person' => trim($_POST['contact_person'] ?? ''),
+        'name_person' => trim($_POST['name_person'] ?? ''),
         'contact_person_position_title' => trim($_POST['contact_person_position_title'] ?? ''),
-        'phone_wa' => trim($_POST['phone_wa'] ?? ''),
+        'phone_number' => trim($_POST['phone_number'] ?? ''),
+        'phone_number2' => trim($_POST['phone_number2'] ?? ''),
         'company_website' => trim($_POST['company_website'] ?? ''),
         'company_category' => trim($_POST['company_category'] ?? ''),
         'contact_person_position_category' => trim($_POST['contact_person_position_category'] ?? ''),
-        'company_industry_type' => trim($_POST['company_industry_type'] ?? ''),
+        'company_type' => trim($_POST['company_type'] ?? ''),
         'address' => trim($_POST['address'] ?? ''),
         'city' => trim($_POST['city'] ?? ''),
         'postcode' => trim($_POST['postcode'] ?? ''),
@@ -35,15 +36,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = "Company email sudah terdaftar.";
         } else {
             $stmt = $pdo->prepare("INSERT INTO crm (
-                company_email, marketing_id, marketing_person_name, contact_person_email,
-                company_name, contact_person, contact_person_position_title, phone_wa,
+                company_email, marketing_id, marketing_person_name, person_email,
+                company_name, name_person, contact_person_position_title, phone_number,phone_number2,
                 company_website, company_category, contact_person_position_category,
-                company_industry_type, address, city, postcode, status
+                company_type, address, city, postcode, status
             ) VALUES (
-                :company_email, :marketing_id, :marketing_person_name, :contact_person_email,
-                :company_name, :contact_person, :contact_person_position_title, :phone_wa,
+                :company_email, :marketing_id, :marketing_person_name, :person_email,
+                :company_name, :name_person, :contact_person_position_title, :phone_number,phone_number2,
                 :company_website, :company_category, :contact_person_position_category,
-                :company_industry_type, :address, :city, :postcode, :status
+                :company_type, :address, :city, :postcode, :status
             )");
             $params = $data + ['marketing_id'=>$mid, 'marketing_person_name'=>$mpname];
             $stmt->execute($params);
@@ -84,8 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700">Contact Person Email</label>
-        <input name="contact_person_email" value="<?=h($_POST['contact_person_email'] ?? '')?>" type="email"
+        <label class="block text-sm font-medium text-gray-700">Person Email</label>
+        <input name="person_email" value="<?=h($_POST['person_email'] ?? '')?>" type="email"
           class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
 
@@ -95,8 +96,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700">Contact Person</label>
-        <input name="contact_person" value="<?=h($_POST['contact_person'] ?? '')?>"
+        <label class="block text-sm font-medium text-gray-700">Name Person</label>
+        <input name="mame_person" value="<?=h($_POST['name_person'] ?? '')?>"
           class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
 
@@ -106,11 +107,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700">Phone WA</label>
-        <input name="phone_wa" value="<?=h($_POST['phone_wa'] ?? '')?>"
+        <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+        <input name="phone_number" value="<?=h($_POST['phone_number'] ?? '')?>"
           class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
-
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Phone Number 2</label>
+        <input name="phone_number2" value="<?=h($_POST['phone_number2'] ?? '')?>"
+          class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       <div>
         <label class="block text-sm font-medium text-gray-700">Website</label>
         <input name="company_website" value="<?=h($_POST['company_website'] ?? '')?>"
@@ -128,8 +132,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700">Industry Type</label>
-        <input name="company_industry_type" value="<?=h($_POST['company_industry_type'] ?? '')?>"
+        <label class="block text-sm font-medium text-gray-700">Company Type</label>
+        <input name="company_type" value="<?=h($_POST['company_type'] ?? '')?>"
           class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
       </div>
 

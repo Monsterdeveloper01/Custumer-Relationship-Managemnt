@@ -19,9 +19,10 @@ if (!$data) {
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $company_name = trim($_POST['company_name'] ?? '');
-    $contact_person = trim($_POST['contact_person'] ?? '');
+    $name_person = trim($_POST['name_person'] ?? '');
     $contact_person_position_title = trim($_POST['contact_person_position_title'] ?? '');
-    $phone_wa = trim($_POST['phone_wa'] ?? '');
+    $phone_number = trim($_POST['phone_number'] ?? '');
+    $phone_number2 = trim($_POST['phone_number2'] ?? '');
     $status = $_POST['status'] ?? 'input';
     $address = trim($_POST['address'] ?? '');
     $city = trim($_POST['city'] ?? '');
@@ -32,9 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $stmt = $pdo->prepare("UPDATE crm SET
             company_name = :company_name,
-            contact_person = :contact_person,
+            name_person = :name_person,
             contact_person_position_title = :contact_person_position_title,
-            phone_wa = :phone_wa,
+            phone_number = :phone_number,
+            phone_number2 = :phone_number2,
             status = :status,
             address = :address,
             city = :city,
@@ -43,9 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
         $stmt->execute([
             ':company_name'=>$company_name,
-            ':contact_person'=>$contact_person,
+            ':name_person'=>$name_person,
             ':contact_person_position_title'=>$contact_person_position_title,
-            ':phone_wa'=>$phone_wa,
+            ':phone_number'=>$phone_number,
+            ':phone_number2'=>$phone_number2,
             ':status'=>$status,
             ':address'=>$address,
             ':city'=>$city,
@@ -89,9 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Contact Person</label>
-        <input type="text" name="contact_person"
-          value="<?=h($_POST['contact_person'] ?? $data['contact_person'])?>"
+        <label class="block text-sm font-medium text-gray-700">Name Person</label>
+        <input type="text" name="name_person"
+          value="<?=h($_POST['name_person'] ?? $data['name_person'])?>"
           class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
       </div>
 
@@ -103,9 +106,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700">Phone WA</label>
-        <input type="text" name="phone_wa"
-          value="<?=h($_POST['phone_wa'] ?? $data['phone_wa'])?>"
+        <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+        <input type="text" name="phone_number"
+          value="<?=h($_POST['phone_number'] ?? $data['phone_number'])?>"
           class="w-full mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
       </div>
 

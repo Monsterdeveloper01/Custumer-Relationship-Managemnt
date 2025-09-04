@@ -13,7 +13,7 @@ $sql = "SELECT * FROM crm WHERE marketing_id = :mid";
 $params = ['mid' => $mid];
 
 if ($q !== '') {
-    $sql .= " AND (company_name LIKE :q OR company_email LIKE :q OR contact_person LIKE :q)";
+    $sql .= " AND (company_name LIKE :q OR company_email LIKE :q OR name_person LIKE :q)";
     $params['q'] = '%'.$q.'%';
 }
 if ($status !== '') {
@@ -88,8 +88,9 @@ $rows = $stmt->fetchAll();
         <thead class="bg-gray-100">
           <tr>
             <th class="px-4 py-2 text-left font-medium text-gray-600">Company</th>
-            <th class="px-4 py-2 text-left font-medium text-gray-600">Contact</th>
-            <th class="px-4 py-2 text-left font-medium text-gray-600">WA</th>
+            <th class="px-4 py-2 text-left font-medium text-gray-600">Name Person</th>
+            <th class="px-4 py-2 text-left font-medium text-gray-600">Phone Number</th>
+            <th class="px-4 py-2 text-left font-medium text-gray-600">Phone Number 2</th>
             <th class="px-4 py-2 text-left font-medium text-gray-600">Status</th>
             <th class="px-4 py-2 text-left font-medium text-gray-600">Actions</th>
           </tr>
@@ -107,10 +108,11 @@ $rows = $stmt->fetchAll();
               <div class="text-gray-500 text-xs"><?=h($r['company_email'])?></div>
             </td>
             <td class="px-4 py-3">
-              <div><?=h($r['contact_person'])?></div>
+              <div><?=h($r['name_person'])?></div>
               <div class="text-gray-500 text-xs"><?=h($r['contact_person_position_title'])?></div>
             </td>
-            <td class="px-4 py-3"><?=h($r['phone_wa'])?></td>
+            <td class="px-4 py-3"><?=h($r['phone_number'])?></td>
+            <td class="px-4 py-3"><?=h($r['phone_number2'])?></td>
             <td class="px-4 py-3">
               <span class="px-2 py-1 rounded-full text-xs font-semibold
                 <?= $r['status']==='CLIENT' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700' ?>">

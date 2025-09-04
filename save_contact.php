@@ -28,28 +28,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $sql = "INSERT INTO crm 
-        (company_name, contact_person, company_email, contact_person_email, phone_wa, 
+        (company_name, name_person, company_email, person_email, phone_number,phone_number2, 
          contact_person_position_title, company_website, company_category, 
-         contact_person_position_category, company_industry_type, address, city, postcode, status, marketing_id)
+         contact_person_position_category, company_type, address, city, postcode, status, marketing_id)
         VALUES 
-        (:company_name, :contact_person, :company_email, :contact_person_email, :phone_wa,
+        (:company_name, :name_person, :company_email, :person_email, :phone_number, :phone_number2,
          :contact_person_position_title, :company_website, :company_category, 
-         :contact_person_position_category, :company_industry_type, :address, :city, :postcode, :status, :marketing_id)";
+         :contact_person_position_category, :company_type, :address, :city, :postcode, :status, :marketing_id)";
 
     $stmt = $pdo->prepare($sql);
 
     try {
         $stmt->execute([
             'company_name' => trim($_POST['company_name']),
-            'contact_person' => trim($_POST['contact_person']),
+            'name_person' => trim($_POST['name_person']),
             'company_email' => $companyEmail,
-            'contact_person_email' => trim($_POST['contact_person_email']),
-            'phone_wa' => trim($_POST['phone_wa']),
+            'person_email' => trim($_POST['person_email']),
+            'phone_number' => trim($_POST['phone_number']),
+            'phone_number2' => trim($_POST['phone_number2']),
             'contact_person_position_title' => trim($_POST['contact_person_position_title']),
             'company_website' => trim($_POST['company_website']),
             'company_category' => trim($_POST['company_category']),
             'contact_person_position_category' => trim($_POST['contact_person_position_category']),
-            'company_industry_type' => trim($_POST['company_industry_type']),
+            'company_type' => trim($_POST['company_type']),
             'address' => trim($_POST['address']),
             'city' => trim($_POST['city']),
             'postcode' => trim($_POST['postcode']),
