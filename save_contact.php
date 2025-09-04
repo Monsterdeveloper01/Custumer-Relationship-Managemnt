@@ -1,7 +1,10 @@
 <?php
 require_once 'db.php';
 require_once 'functions.php';
-session_start();
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $marketingId = $_SESSION['user']['marketing_id'] ?? null;
 if (!$marketingId) {
@@ -9,35 +12,62 @@ if (!$marketingId) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $companyEmail = trim($_POST['company_email']);
+
+    // Cek apakah email perusahaan sudah ada
+    $check = $pdo->prepare("SELECT company_email FROM crm WHERE company_email = :email");
+    $check->execute([':email' => $companyEmail]);
+
+    if ($check->fetch()) {
+        $_SESSION['toast'] = [
+            'type' => 'error',
+            'message' => "Email perusahaan <b>$companyEmail</b> sudah terdaftar!"
+        ];
+        header("Location: contact_list.php");
+        exit;
+    }
+
     $sql = "INSERT INTO crm 
-            (company_name, contact_person, company_email, contact_person_email, phone_wa, 
-             contact_person_position_title, company_website, company_category, 
-             contact_person_position_category, company_industry_type, address, city, postcode, status, marketing_id)
-            VALUES 
-            (:company_name, :contact_person, :company_email, :contact_person_email, :phone_wa,
-             :contact_person_position_title, :company_website, :company_category, 
-             :contact_person_position_category, :company_industry_type, :address, :city, :postcode, :status, :marketing_id)";
+        (company_name, contact_person, company_email, contact_person_email, phone_wa, 
+         contact_person_position_title, company_website, company_category, 
+         contact_person_position_category, company_industry_type, address, city, postcode, status, marketing_id)
+        VALUES 
+        (:company_name, :contact_person, :company_email, :contact_person_email, :phone_wa,
+         :contact_person_position_title, :company_website, :company_category, 
+         :contact_person_position_category, :company_industry_type, :address, :city, :postcode, :status, :marketing_id)";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        'company_name' => $_POST['company_name'],
-        'contact_person' => $_POST['contact_person'],
-        'company_email' => $_POST['company_email'],
-        'contact_person_email' => $_POST['contact_person_email'],
-        'phone_wa' => $_POST['phone_wa'],
-        'contact_person_position_title' => $_POST['contact_person_position_title'],
-        'company_website' => $_POST['company_website'],
-        'company_category' => $_POST['company_category'],
-        'contact_person_position_category' => $_POST['contact_person_position_category'],
-        'company_industry_type' => $_POST['company_industry_type'],
-        'address' => $_POST['address'],
-        'city' => $_POST['city'],
-        'postcode' => $_POST['postcode'],
-        'status' => $_POST['status'],
-        'marketing_id' => $marketingId
-    ]);
+
+    try {
+        $stmt->execute([
+            'company_name' => trim($_POST['company_name']),
+            'contact_person' => trim($_POST['contact_person']),
+            'company_email' => $companyEmail,
+            'contact_person_email' => trim($_POST['contact_person_email']),
+            'phone_wa' => trim($_POST['phone_wa']),
+            'contact_person_position_title' => trim($_POST['contact_person_position_title']),
+            'company_website' => trim($_POST['company_website']),
+            'company_category' => trim($_POST['company_category']),
+            'contact_person_position_category' => trim($_POST['contact_person_position_category']),
+            'company_industry_type' => trim($_POST['company_industry_type']),
+            'address' => trim($_POST['address']),
+            'city' => trim($_POST['city']),
+            'postcode' => trim($_POST['postcode']),
+            'status' => trim($_POST['status']),
+            'marketing_id' => $marketingId
+        ]);
+
+        $_SESSION['toast'] = [
+            'type' => 'success',
+            'message' => "Kontak berhasil ditambahkan!"
+        ];
+    } catch (PDOException $e) {
+        $_SESSION['toast'] = [
+            'type' => 'error',
+            'message' => "Error DB: " . $e->getMessage()
+        ];
+    }
 
     header("Location: contact_list.php");
     exit;
 }
-?>

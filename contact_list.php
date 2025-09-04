@@ -3,44 +3,50 @@ require_once 'db.php';
 require_once 'functions.php';
 session_start(); // pastikan session aktif
 
-// Ambil marketing_id dari user login
-$marketingId = $_SESSION['user']['marketing_id'] ?? null;
-if (!$marketingId) {
+// Pastikan user login
+if (!isset($_SESSION['user']['marketing_id'])) {
     die("Unauthorized: Anda harus login sebagai marketing.");
 }
 
-// Pagination
+$marketingId = $_SESSION['user']['marketing_id'];
+
+// --- Pagination setup ---
 $limit = 5;
-$page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page  = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 $start = ($page - 1) * $limit;
 
-// Hitung total data (khusus marketing_id yang login)
+// Hitung total data khusus marketing ini
 $stmtTotal = $pdo->prepare("SELECT COUNT(*) AS total FROM crm WHERE marketing_id = :marketing_id");
 $stmtTotal->execute(['marketing_id' => $marketingId]);
-$total = $stmtTotal->fetch()['total'];
-$pages = ceil($total / $limit);
+$total = (int)$stmtTotal->fetchColumn();
+$pages = $total > 0 ? ceil($total / $limit) : 1;
 
-// Ambil data sesuai marketing_id
-$sql = "SELECT * FROM crm WHERE marketing_id = :marketing_id LIMIT :start, :limit";
+// Ambil data sesuai marketing_id + pagination
+$sql = "SELECT * FROM crm 
+        WHERE marketing_id = :marketing_id 
+        ORDER BY company_name ASC
+        LIMIT :start, :limit";
 $stmt = $pdo->prepare($sql);
-$stmt->bindValue(':marketing_id', $marketingId, PDO::PARAM_STR); // pakai STR, bukan INT
+$stmt->bindValue(':marketing_id', $marketingId, PDO::PARAM_STR);
 $stmt->bindValue(':start', $start, PDO::PARAM_INT);
 $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 $stmt->execute();
-$data = $stmt->fetchAll();
+$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-// Jika ada email (Edit mode) — tetap filter biar aman
+// --- Mode edit ---
 $editData = null;
 if (isset($_GET['email'])) {
-    $stmtEdit = $pdo->prepare("SELECT * FROM crm WHERE company_email = :email AND marketing_id = :marketing_id");
+    $stmtEdit = $pdo->prepare("SELECT * FROM crm 
+                               WHERE company_email = :email 
+                               AND marketing_id = :marketing_id");
     $stmtEdit->execute([
-        'email' => $_GET['email'],
+        'email'        => $_GET['email'],
         'marketing_id' => $marketingId
     ]);
-    $editData = $stmtEdit->fetch();
+    $editData = $stmtEdit->fetch(PDO::FETCH_ASSOC);
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -53,23 +59,24 @@ if (isset($_GET['email'])) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <script>
-function confirmDelete(email) {
-  Swal.fire({
-    title: 'Yakin hapus kontak ini?',
-    text: "Data akan terhapus permanen!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6',
-    confirmButtonText: 'Ya, hapus!',
-    cancelButtonText: 'Batal'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      window.location.href = "delete_contact.php?email=" + encodeURIComponent(email);
+    function confirmDelete(email) {
+        Swal.fire({
+            title: 'Yakin hapus kontak ini?',
+            text: "Data akan terhapus permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "delete_contact.php?email=" + encodeURIComponent(email);
+            }
+        });
     }
-  });
-}
 </script>
+
 <body class="bg-gray-50 min-h-screen" x-data="{ sidebarOpen: false }">
     <!-- Header -->
     <?php include("partials/Header.html"); ?>
@@ -210,15 +217,17 @@ function confirmDelete(email) {
                                     <a href="contact_list.php?email=<?= urlencode($row['company_email']); ?>"
                                         class="text-blue-600 hover:underline">Edit</a>
                                     <a href="javascript:void(0);"
-                                        onclick="confirmDelete('<?= urlencode($row['company_email']); ?>')"
+                                        onclick="confirmDelete('<?= $row['company_email']; ?>')"
                                         class="text-red-600 hover:underline">
                                         Delete
                                     </a>
                                 </td>
+
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+
             </div>
 
             <!-- Pagination -->
@@ -240,13 +249,11 @@ function confirmDelete(email) {
 <?php if (isset($_SESSION['toast'])): ?>
 <script>
 Swal.fire({
-  toast: true,
-  position: 'top-end',
-  icon: 'success',
-  title: '<?= $_SESSION['toast']; ?>',
-  showConfirmButton: false,
+  icon: '<?= $_SESSION['toast']['type'] ?>',
+  title: '<?= $_SESSION['toast']['type'] === "success" ? "Berhasil" : "Gagal" ?>',
+  html: '<?= $_SESSION['toast']['message'] ?>',
   timer: 3000,
-  timerProgressBar: true
+  showConfirmButton: false
 });
 </script>
 <?php unset($_SESSION['toast']); endif; ?>
