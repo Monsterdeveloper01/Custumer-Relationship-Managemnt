@@ -40,74 +40,10 @@ $rows = $stmt->fetchAll();
 <body class="bg-gray-50 min-h-screen" x-data="{ sidebarOpen: false, animate: false }">
 
   <!-- Navbar -->
-  <header class="bg-white text-black shadow-md">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+  <?php include("partials/Header.html"); ?>
 
-      <!-- Kiri: Burger + Logo + Text -->
-      <div class="flex items-center gap-3">
-        
-        <!-- Button Burger -->
-<button 
-  @click="
-    sidebarOpen = !sidebarOpen;
-    animate = true;
-    setTimeout(() => animate = false, 300);
-  "
-  :class="[
-    'p-2 rounded-md hover:bg-gray-100 focus:outline-none text-2xl text-gray-700 transition-transform duration-300 ease-in-out',
-    animate ? 'scale-90 rotate-12' : 'scale-100 rotate-0'
-  ]"
->
-  ☰
-</button>
-
-
-        <!-- Logo + Text -->
-        <div class="flex flex-col">
-          <img src="img/rayterton-apps-software-logo.png" 
-              alt="Logo"
-              class="object-contain"
-              style="width: 125px; height: 45px;">
-          <h1 class="text-lg font-semibold tracking-wide" style="color: #4F46E5;">
-            Customer Relationship Management
-          </h1>
-        </div>
-      </div>
-
-      <!-- Kanan: Sapaan user -->
-      <div class="text-sm">
-        Halo, <strong><?=h($_SESSION['user']['name'])?></strong>
-      </div>
-    </div>
-  </header>
-
-
-  <!-- Sidebar (slide dari kiri) -->
-  <aside x-show="sidebarOpen" 
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="-translate-x-full"
-         x-transition:enter-end="translate-x-0"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="translate-x-0"
-         x-transition:leave-end="-translate-x-full"
-         class="fixed top-0 left-0 w-56 h-full bg-white shadow-md z-50">
-    
-    <!-- Tombol close -->
-    <div class="flex justify-end p-3">
-      <button @click="sidebarOpen = false" class="p-1 hover:bg-gray-200 rounded">
-        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Menu -->
-    <nav class="mt-2 space-y-1 px-4">
-      <a href="dashboard.php" class="block px-2 py-2 rounded hover:bg-blue-100 text-gray-700">Dashboard</a>
-      <a href="contact_list.php" class="block px-2 py-2 rounded hover:bg-blue-100 text-gray-700">Contact List</a>
-    </nav>
-  </aside>
+  <!-- Sidebar -->
+  <?php include("partials/sidebar.html"); ?>
 
   <!-- Konten Utama -->
   <main class="max-w-6xl mx-auto px-4 py-6">
