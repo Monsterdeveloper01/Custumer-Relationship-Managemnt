@@ -44,44 +44,7 @@ foreach ($userRows as $row) {
 
 <body class="bg-gray-100 font-sans">
 
-    <!-- Topbar -->
-    <header class="flex justify-between items-center bg-white shadow px-6 py-4">
-        <div class="flex items-center gap-4">
-            <!-- Tombol toggle sidebar -->
-            <button id="toggleSidebar" class="p-2 rounded-lg bg-gray-200 hover:bg-gray-300">
-                ☰
-            </button>
-            <div>
-                <img src="../img/rayterton-apps-software-logo.png" alt="Logo" class="w-13 h-12">
-                <p class="text-sm text-gray-600">Customer Relationship Management</p>
-            </div>
-        </div>
-
-        <div class="flex items-center gap-6">
-            <div class="flex items-center space-x-2">
-                <span class="text-sm text-gray-700">Halo,<strong><?= h($_SESSION['user']['name']) ?></strong></span>
-            </div>
-            <a href="../logout.php"
-                class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
-                Logout
-            </a>
-        </div>
-    </header>
-
     <div class="flex">
-
-        <aside id="sidebar"
-            class="bg-black min-h-screen w-56 transition-all duration-300">
-            <nav class="flex flex-col">
-                <a href="#"
-                    class="flex items-center gap-3 px-4 py-3 text-white hover:bg-blue-700 transition rounded-md">
-                    <span class="icon text-xl w-6 text-center">📇</span>
-                    <span class="sidebar-text">Contact List</span>
-                </a>
-            </nav>
-        </aside>
-
-
         <!-- Main Content -->
         <main id="mainContent" class="flex-1 p-6 transition-all duration-300 ml-0.5">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
