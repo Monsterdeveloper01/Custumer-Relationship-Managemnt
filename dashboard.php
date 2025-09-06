@@ -44,8 +44,8 @@ $params = [];
 
 // filter status jika ada
 if ($statusFilter !== '') {
-    $sql .= " AND status = ?";
-    $params[] = $statusFilter;
+  $sql .= " AND status = ?";
+  $params[] = $statusFilter;
 }
 
 // Pagination
@@ -54,8 +54,6 @@ $sql .= " LIMIT $limit OFFSET $offset";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $rowsPaginated = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -280,13 +278,13 @@ $rowsPaginated = $stmt->fetchAll(PDO::FETCH_ASSOC);
               </div>
               <span class="text-sm font-medium text-gray-700">Add Company</span>
             </a>
-            <a href="#" class="flex flex-col items-center justify-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition">
+            <a href="send_email.php" class="flex flex-col items-center justify-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition">
               <div class="p-3 bg-green-100 text-green-600 rounded-full mb-2">
                 <i class="fas fa-envelope"></i>
               </div>
               <span class="text-sm font-medium text-gray-700">Send Email</span>
             </a>
-            <a href="#" class="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
+            <a href="" class="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
               <div class="p-3 bg-blue-100 text-blue-600 rounded-full mb-2">
                 <i class="fas fa-file-export"></i>
               </div>
@@ -305,7 +303,7 @@ $rowsPaginated = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <!-- Table Section -->
       <section class="bg-white shadow-lg rounded-xl p-6 mt-6">
         <div class="flex items-center justify-between mb-6">
-          <h3 class="text-lg font-semibold text-gray-800">Company Records</h3>
+          <h3 class="text-lg font-semibold text-gray-800">All Company Records</h3>
           <div class="flex space-x-2">
             <!-- Dropdown Filter -->
             <form method="GET" class="flex">
@@ -334,11 +332,17 @@ $rowsPaginated = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <table class="w-full text-sm">
             <thead class="bg-gray-50 text-gray-600 uppercase font-medium">
               <tr>
-                <th class="px-4 py-3 text-left">Company</th>
-                <th class="px-4 py-3 text-left">Contact Person</th>
-                <th class="px-4 py-3 text-left">Email</th>
-                <th class="px-4 py-3 text-left">Phone</th>
-                <th class="px-4 py-3 text-left">Status</th>
+                <thead class="bg-gray-50 text-gray-600 uppercase font-medium">
+                  <tr>
+                    <th class="px-4 py-3 text-left">Company</th>
+                    <th class="px-4 py-3 text-left">Contact Person</th>
+                    <th class="px-4 py-3 text-left">Email</th>
+                    <th class="px-4 py-3 text-left">Phone</th>
+                    <th class="px-4 py-3 text-left">Status</th>
+                    <th class="px-4 py-3 text-left">Marketing ID</th> <!-- Tambahan -->
+                  </tr>
+                </thead>
+
                 <!-- <th class="px-4 py-3 text-right">Actions</th> -->
               </tr>
             </thead>
@@ -370,6 +374,15 @@ $rowsPaginated = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?= ucfirst($status) ?>
                       </span>
                     </td>
+
+                    <!-- Marketing ID Badge -->
+                    <td class="px-4 py-3">
+                      <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-200 text-gray-700">
+                        <?= htmlspecialchars($row['marketing_id']) ?>
+                      </span>
+                    </td>
+
+
                     <!-- <td class="px-4 py-3">
                       <div class="flex justify-end space-x-2">
                         <button class="p-1 text-gray-400 hover:text-blue-600">
@@ -435,7 +448,8 @@ $rowsPaginated = $stmt->fetchAll(PDO::FETCH_ASSOC);
           </div>
         </div>
       </section>
-    </main>
+  </div>
+  </main>
   </div>
 
   <script>
