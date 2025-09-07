@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
       $mail->Host       = 'mail.rayterton.com';
       $mail->SMTPAuth   = true;
       $mail->Username   = 'marketing@rayterton.com';
-      $mail->Password   = 'PASSWORD_EMAIL'; // ganti password asli
+      $mail->Password   = 'RTNmainServer'; // ganti password asli
       $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
       $mail->Port       = 465;
 
