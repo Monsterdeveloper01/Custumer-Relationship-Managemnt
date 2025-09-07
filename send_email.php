@@ -87,9 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
       $mail->setFrom('marketing@rayterton.com', "CRM - {$marketing_name}");
       $mail->addAddress($to);
 
-      if ($marketing_email) {
-        $mail->addReplyTo($marketing_email, $marketing_name);
-      }
+      // pastikan balasan masuk ke email marketing
+      $mail->addReplyTo('marketing@rayterton.com', "CRM - {$marketing_name}");
 
       $mail->isHTML(false);
       $mail->Subject = $subject;

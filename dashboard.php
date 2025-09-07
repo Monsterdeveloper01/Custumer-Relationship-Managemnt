@@ -290,11 +290,11 @@ $rowsPaginated = $stmt->fetchAll(PDO::FETCH_ASSOC);
               </div>
               <span class="text-sm font-medium text-gray-700">Export Data</span>
             </a>
-            <a href="#" class="flex flex-col items-center justify-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition">
+            <a href="fetch_replies.php" class="flex flex-col items-center justify-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition">
               <div class="p-3 bg-purple-100 text-purple-600 rounded-full mb-2">
                 <i class="fas fa-chart-pie"></i>
               </div>
-              <span class="text-sm font-medium text-gray-700">Generate Report</span>
+              <span class="text-sm font-medium text-gray-700">View Replies</span>
             </a>
           </div>
         </div>
